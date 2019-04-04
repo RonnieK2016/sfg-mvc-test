@@ -9,6 +9,10 @@ group = 'com.udemy'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+ext {
+	mapstructVersion = '1.3.0.Final'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -27,4 +31,12 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compile "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs = [
+			'-Amapstruct.defaultComponentModel=spring'
+	]
 }

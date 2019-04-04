@@ -27,7 +27,12 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository
                 .findAll()
                 .stream()
-                .map(categoryMapper::categoryToCategoryDTO)
+                .map( category ->
+                {
+                    CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
+                    categoryDTO.setCategoryUrl("/api/v1/categories/" + categoryDTO.getName());
+                    return categoryDTO;
+                })
                 .collect(Collectors.toList());
     }
 

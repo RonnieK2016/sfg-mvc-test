@@ -40,6 +40,4 @@ tasks.withType(JavaCompile) {
 	options.compilerArgs = [
 			'-Amapstruct.defaultComponentModel=spring'
 	]
-
-	println 'Compiler args: ' + options.compilerArgs
 }

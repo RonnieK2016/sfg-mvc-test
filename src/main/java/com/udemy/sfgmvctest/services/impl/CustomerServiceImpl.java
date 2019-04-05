@@ -6,6 +6,7 @@ import com.udemy.sfgmvctest.domain.Customer;
 import com.udemy.sfgmvctest.repositories.CustomerRepository;
 import com.udemy.sfgmvctest.services.CustomerService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,5 +53,20 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO saveCustomerById(Long id, CustomerDTO customerDTO) {
         customerDTO.setId(id);
         return saveCustomer(customerDTO);
+    }
+
+    @Override
+    public CustomerDTO patchCustomer(Long id, CustomerDTO customerDTO) {
+        return customerRepository.findById(id)
+                .map(customer -> {
+                    if(!StringUtils.isEmpty(customerDTO.getFirstName())) {
+                        customer.setFirstName(customerDTO.getFirstName());
+                    }
+                    if(!StringUtils.isEmpty(customerDTO.getLastName())) {
+                        customer.setLastName(customerDTO.getLastName());
+                    }
+
+                    return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+                }).orElse(null);
     }
 }

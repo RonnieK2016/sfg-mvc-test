@@ -2,6 +2,7 @@ package com.udemy.sfgmvctest.services.impl;
 
 import com.udemy.sfgmvctest.api.v1.mapper.CustomerMapper;
 import com.udemy.sfgmvctest.api.v1.model.CustomerDTO;
+import com.udemy.sfgmvctest.domain.Customer;
 import com.udemy.sfgmvctest.repositories.CustomerRepository;
 import com.udemy.sfgmvctest.services.CustomerService;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,21 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findById(id)
                 .map(customerMapper::customerToCustomerDTO)
                 .orElse(null);
+    }
+
+    @Override
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
+        Customer savedCustomer = customerRepository.save(customerMapper.customerDtoToCustomer(customerDTO));
+        CustomerDTO returnCustomerDto = customerMapper.customerToCustomerDTO(savedCustomer);
+
+        returnCustomerDto.setCustomerUrl("/api/v1/customers/"+returnCustomerDto.getId());
+
+        return  returnCustomerDto;
+    }
+
+    @Override
+    public CustomerDTO saveCustomerById(Long id, CustomerDTO customerDTO) {
+        customerDTO.setId(id);
+        return saveCustomer(customerDTO);
     }
 }

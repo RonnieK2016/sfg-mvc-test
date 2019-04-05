@@ -26,6 +26,8 @@ public class CustomerControllerTest {
     private static final String FIRST_NAME = "Jimmy";
     private static final String LAST_NAME = "Jones";
     private static final long ID = 1L;
+    private static final String API_URL = "/api/v1/customers/";
+    private static final String API_URL_WITH_ID = API_URL + ID;
 
     @Mock
     private CustomerService customerService;
@@ -54,7 +56,7 @@ public class CustomerControllerTest {
 
         when(customerService.getAllCustomers()).thenReturn(Arrays.asList(new CustomerDTO(), new CustomerDTO()));
 
-        mockMvc.perform(get("/api/v1/customers/").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_URL).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(2)));
     }
@@ -68,7 +70,7 @@ public class CustomerControllerTest {
 
         when(customerService.findCustomerById(ID)).thenReturn(customer);
 
-        mockMvc.perform(get("/api/v1/customers/" + ID).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_URL_WITH_ID).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)));
@@ -84,18 +86,18 @@ public class CustomerControllerTest {
         CustomerDTO returnCustomer = new CustomerDTO();
         returnCustomer.setFirstName(FIRST_NAME);
         returnCustomer.setLastName(LAST_NAME);
-        returnCustomer.setCustomerUrl("/api/v1/customers/1");
+        returnCustomer.setCustomerUrl(API_URL_WITH_ID);
         returnCustomer.setId(ID);
 
         when(customerService.saveCustomer(customer)).thenReturn(returnCustomer);
 
-        mockMvc.perform(post("/api/v1/customers/")
+        mockMvc.perform(post(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+                .andExpect(jsonPath("$.customer_url", equalTo(API_URL_WITH_ID)));
 
     }
 
@@ -109,18 +111,41 @@ public class CustomerControllerTest {
         CustomerDTO returnCustomer = new CustomerDTO();
         returnCustomer.setFirstName(FIRST_NAME);
         returnCustomer.setLastName(LAST_NAME);
-        returnCustomer.setCustomerUrl("/api/v1/customers/1");
+        returnCustomer.setCustomerUrl(API_URL_WITH_ID);
         returnCustomer.setId(ID);
 
         when(customerService.saveCustomerById(ID, customer)).thenReturn(returnCustomer);
 
-        mockMvc.perform(put("/api/v1/customers/1")
+        mockMvc.perform(put(API_URL_WITH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+                .andExpect(jsonPath("$.customer_url", equalTo(API_URL_WITH_ID)));
 
+    }
+
+    @Test
+    public void testPatchCustomer() throws Exception {
+
+        //given
+        CustomerDTO customer = new CustomerDTO();
+        customer.setFirstName(FIRST_NAME);
+
+        CustomerDTO returnDTO = new CustomerDTO();
+        returnDTO.setFirstName(customer.getFirstName());
+        returnDTO.setLastName(LAST_NAME);
+        returnDTO.setCustomerUrl("/api/v1/customers/" + ID);
+
+        when(customerService.patchCustomer(ID, customer)).thenReturn(returnDTO);
+
+        mockMvc.perform(patch(API_URL_WITH_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
+                .andExpect(jsonPath("$.customer_url", equalTo(API_URL_WITH_ID)));
     }
 }

@@ -3,6 +3,7 @@ package com.udemy.sfgmvctest.services.impl;
 import com.udemy.sfgmvctest.api.v1.mapper.CustomerMapper;
 import com.udemy.sfgmvctest.api.v1.model.CustomerDTO;
 import com.udemy.sfgmvctest.domain.Customer;
+import com.udemy.sfgmvctest.exceptions.ResourceNotFoundException;
 import com.udemy.sfgmvctest.repositories.CustomerRepository;
 import com.udemy.sfgmvctest.services.CustomerService;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO findCustomerById(Long id) {
         return customerRepository.findById(id)
                 .map(customerMapper::customerToCustomerDTO)
-                .orElse(null);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
                     resultCustomerDTO.setCustomerUrl("/api/v1/customers/" + resultCustomerDTO.getId());
 
                     return resultCustomerDTO;
-                }).orElse(null);
+                }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override

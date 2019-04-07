@@ -2,6 +2,7 @@ package com.udemy.sfgmvctest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udemy.sfgmvctest.api.v1.model.CustomerDTO;
+import com.udemy.sfgmvctest.exceptions.ResourceNotFoundException;
 import com.udemy.sfgmvctest.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -49,7 +51,9 @@ public class CustomerControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
+                .setControllerAdvice(new RestExceptionHandler())
+                .build();
     }
 
     @Test
@@ -158,5 +162,15 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk());
 
         verify(customerService).deleteCustomerById(ID);
+    }
+
+    @Test
+    public void testNotFoundException() throws Exception {
+
+        when(customerService.findCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(API_URL + "/222")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

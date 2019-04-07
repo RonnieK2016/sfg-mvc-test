@@ -54,14 +54,12 @@ public class CustomerServiceTest {
         customer.setLastName(LAST_NAME);
 
         when(customerRepository.findById(ID)).thenReturn(Optional.of(customer));
-        when(customerRepository.findById(NOT_FOUND_ID)).thenReturn(Optional.empty());
 
         CustomerDTO customerDTO = customerService.findCustomerById(ID);
 
         assertEquals(customerDTO.getFirstName(), customer.getFirstName());
         assertEquals(customerDTO.getLastName(), customer.getLastName());
 
-        assertNull(customerService.findCustomerById(NOT_FOUND_ID));
     }
 
     @Test

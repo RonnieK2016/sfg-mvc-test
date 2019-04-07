@@ -23,7 +23,6 @@ public class CustomerServiceTest {
     private static final String FIRST_NAME = "Jimmy";
     private static final String LAST_NAME = "Jones";
     private static final long ID = 1L;
-    private static final long NOT_FOUND_ID = 2L;
 
     private CustomerService customerService;
     @Mock

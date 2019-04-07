@@ -2,8 +2,10 @@ package com.udemy.sfgmvctest.bootstrap;
 
 import com.udemy.sfgmvctest.domain.Category;
 import com.udemy.sfgmvctest.domain.Customer;
+import com.udemy.sfgmvctest.domain.Vendor;
 import com.udemy.sfgmvctest.repositories.CategoryRepository;
 import com.udemy.sfgmvctest.repositories.CustomerRepository;
+import com.udemy.sfgmvctest.repositories.VendorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +16,12 @@ public class DataLoader implements CommandLineRunner {
 
     private CustomerRepository customerRepository;
 
-    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    private VendorRepository vendorRepository;
+
+    public DataLoader(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
@@ -28,6 +33,20 @@ public class DataLoader implements CommandLineRunner {
         if(customerRepository.count() == 0) {
             loadCustomerData();
         }
+
+        if(vendorRepository.count() == 0) {
+            loadVendorData();
+        }
+    }
+
+    private void loadVendorData() {
+        Vendor vendor1 = new Vendor();
+        vendor1.setName("Vendor 1");
+        vendorRepository.save(vendor1);
+
+        Vendor vendor2 = new Vendor();
+        vendor2.setName("Vendor 2");
+        vendorRepository.save(vendor2);
     }
 
     private void loadCustomerData() {

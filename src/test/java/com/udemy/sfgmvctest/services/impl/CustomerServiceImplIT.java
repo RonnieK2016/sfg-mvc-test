@@ -6,6 +6,7 @@ import com.udemy.sfgmvctest.bootstrap.DataLoader;
 import com.udemy.sfgmvctest.domain.Customer;
 import com.udemy.sfgmvctest.repositories.CategoryRepository;
 import com.udemy.sfgmvctest.repositories.CustomerRepository;
+import com.udemy.sfgmvctest.repositories.VendorRepository;
 import com.udemy.sfgmvctest.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +29,14 @@ public class CustomerServiceImplIT {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private VendorRepository vendorRepository;
+
     private CustomerService customerService;
 
     @Before
     public void setUp() throws Exception {
-        DataLoader dataLoader = new DataLoader(categoryRepository, customerRepository);
+        DataLoader dataLoader = new DataLoader(categoryRepository, customerRepository, vendorRepository);
         dataLoader.run();
 
         customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);

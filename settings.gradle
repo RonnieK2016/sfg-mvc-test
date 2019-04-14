@@ -4,3 +4,5 @@ pluginManagement {
 	}
 }
 rootProject.name = 'sfg-mvctest'
+include 'rest-model'
+
